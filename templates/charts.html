@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Employees per Department</h2>
+    <canvas id="deptPieChart" width="400" height="200"></canvas>
+
+    <h2>Monthly Attendance Overview</h2>
+    <canvas id="attendanceBarChart" width="400" height="200"></canvas>
+
+    <!-- Embed data safely -->
+    {{ department_labels|json_script:"departmentLabels" }}
+    {{ department_counts|json_script:"departmentCounts" }}
+    {{ bar_labels|json_script:"barLabels" }}
+    {{ bar_values|json_script:"barValues" }}
+
+    <script>
+        const departmentLabels = JSON.parse(document.getElementById('departmentLabels').textContent);
+        const departmentCounts = JSON.parse(document.getElementById('departmentCounts').textContent);
+        const barLabels = JSON.parse(document.getElementById('barLabels').textContent);
+        const barValues = JSON.parse(document.getElementById('barValues').textContent);
+
+        // Pie Chart
+        const pieCtx = document.getElementById('deptPieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: departmentLabels,
+                datasets: [{
+                    label: 'Employees',
+                    data: departmentCounts,
+                    backgroundColor: ['red', 'blue', 'green', 'orange', 'purple'],
+                }]
+            }
+        });
+
+        // Bar Chart
+        const barCtx = document.getElementById('attendanceBarChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: barLabels,
+                datasets: [{
+                    label: 'Presents per Day',
+                    data: barValues,
+                    backgroundColor: 'steelblue',
+                }]
+            }
+        });
+    </script>
+</body>
+</html>
